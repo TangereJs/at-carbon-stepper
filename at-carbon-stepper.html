@@ -1,0 +1,105 @@
+<link rel="import" href="../tangere/tangere.html">
+
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../iron-selector/iron-selector.html">
+
+<link rel="import" href="../at-core-style-classes/at-core-style-classes.html" />
+<link rel="import" href="../at-carbon-icon/at-carbon-icon.html">
+
+<link rel="import" href="../at-core-resize-sensor/at-core-resize-sensor.html">
+
+<link rel="import" href="at-carbon-stepper-step.html">
+
+<dom-module id="at-carbon-stepper">
+  <template>
+    <style include="at-core-style-classes">
+
+    </style>
+
+    <div id="wrapper" class="wrapper">
+      <div id="stepContainer" class="stepContainer" on-next-step="_openNextStepHandler" on-previous-step="_openPreviousStepHandler">
+        <slot></slot>
+      </div>
+    </div>
+
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+
+    is: 'at-carbon-stepper',
+
+    behaviors: [
+      Polymer.IronResizableBehavior
+    ],
+
+    properties: {
+      /**
+       * Contains an ID of the selected step.
+       *
+       * @attribute selected
+       * @type {string}
+       */
+      activeStep: {
+        type: String,
+        notify: true,
+        observer: '_activeStepChanged'
+      },
+    },
+
+    ready: function () {
+
+    },
+
+    _activeStepChanged: function (newValue, oldValue) {
+      console.log("Active step changed: " + this.activeStep);
+    },
+
+    // Get all steps contained in this stepper
+    _getAllSteps: function () {
+      var self = this;
+      var stepContainer = self.$.stepContainer;
+
+      var allSteps = this.querySelectorAll('at-carbon-stepper-step');
+
+      return allSteps;
+    },
+
+    // Close the step with current index and open the next step
+    _openNextStepHandler: function (event) {
+      var currentStepIndex = event.detail.value - 1;
+      var nextStepIndex = currentStepIndex + 1;
+
+      var stepsArray = this._getAllSteps();
+
+      var currentStep = stepsArray[currentStepIndex];
+      var nextStep = stepsArray[nextStepIndex];
+
+      currentStep.stepBodyHidden = true;
+      nextStep.stepBodyHidden = false;
+
+      // Next step becomes an active step
+      this.activeStep = nextStep.id;
+    },
+
+    // Close the step with current index and open the previous step
+    _openPreviousStepHandler: function (event) {
+      var currentStepIndex = event.detail.value - 1;
+      var previousStepIndex = currentStepIndex - 1;
+
+      var stepsArray = this._getAllSteps();
+
+      var currentStep = stepsArray[currentStepIndex];
+      var previousStep = stepsArray[previousStepIndex];
+
+      currentStep.stepBodyHidden = true;
+      previousStep.stepBodyHidden = false;
+
+      // Previous step becomes an active step
+      this.activeStep = previousStep.id;
+    },
+
+
+  });
+</script>

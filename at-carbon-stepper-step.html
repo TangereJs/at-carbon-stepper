@@ -1,0 +1,165 @@
+<link rel="import" href="../tangere/tangere.html">
+<link rel="import" href="../at-carbon-icon/at-carbon-icon.html">
+<link rel="import" href="../at-carbon-badge/at-carbon-badge.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+
+<dom-module id="at-carbon-stepper-step">
+    <template>
+        <style include="at-core-style-classes">
+            .stepCircle {
+                border-radius: 50%;
+                color: white;
+                text-align: center;
+                width: 30px;
+                height: 30px;
+                font-size: 20px;
+                line-height: 30px;
+            }
+
+            .verticalBar {
+                border-right: black 1px solid;
+                width: 15px;
+            }
+
+            .betweenStepVerticalBar {
+                border-right: black 1px solid;
+                height: 15px;
+                width: 15px;
+            }
+
+            [hidden] {
+                display: none !important;
+            }
+        </style>
+
+        <div id="wrapper" class="container layout-vertical msm">
+            <div id="stepHeader" class="container layout-horizontal mbsm">
+                <div id="stepCircle" class="stepCircle mrsm background-grey">
+                    <!-- This contains the circle with index number (e.g. '1', '2', '3'...) -->
+                </div>
+
+                <div id="stepHeading" class="container layout-horizontal layout-center">
+                    <!-- This contains the heading of each step (e.g. 'the first section', 'Section 2', 'Section3'...) -->
+                </div>
+            </div>
+
+            <div id="stepBody" class="layout-horizontal " hidden=[[stepBodyHidden]]>
+                <div id="verticalBar" class="verticalBar" hidden=[[!showVerticalBar]]>
+                    <!-- The vertical bar is used as a connector between the steps -->
+                </div>
+
+                <div id="formContents" class="mllg">
+                    <!-- The form will go here -->
+                    <slot></slot>
+                    <div id="buttonContainer" class="ml plsm mt mb">
+                        <at-carbon-button id="backButton" label="Back" color="Primary" on-click="_openPreviousStep"
+                            hidden="[[!_computeBackButtonHidden()]]"></at-carbon-button>
+                        <at-carbon-button id="nextButton" label="Next" color="Primary" on-click="_openNextStep"
+                            hidden="[[!_computeNextButtonHidden()]]"></at-carbon-button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="betweenStepVerticalBar" class="layout-horizontal" hidden=[[!showBetweenStepVerticalBar]]>
+                <div class="betweenStepVerticalBar"></div>
+            </div>
+
+        </div>
+
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'at-carbon-stepper-step',
+
+        properties: {
+            label: {
+                type: String,
+                value: ''
+            },
+
+            stepIndex: {
+                type: String,
+                value: ''
+            },
+
+            showNextButton: {
+                type: Boolean,
+                value: false
+            },
+
+            showBackButton: {
+                type: Boolean,
+                value: false
+            },
+
+            showVerticalBar: {
+                type: Boolean,
+                value: true
+            },
+
+            showBetweenStepVerticalBar: {
+                type: Boolean,
+                value: true
+            },
+
+            stepBodyHidden: {
+                type: Boolean,
+                value: false,
+                observer: '_stepBodyHiddenChanged'
+            }
+        },
+
+        attached: function () {
+            var self = this;
+
+            // Set index number in circle and a heading
+            var stepCircle = self.$.stepCircle;
+            var stepHeading = self.$.stepHeading;
+
+            stepCircle.innerHTML = self.stepIndex;
+            stepHeading.innerHTML = self.label;
+
+        },
+
+        _stepBodyHiddenChanged: function() {
+            var self = this;
+
+            var stepCircle = self.$.stepCircle;
+
+            if(self.stepBodyHidden == false) {
+                stepCircle.classList.remove('background-grey');
+                stepCircle.classList.add('background-blue');
+            }
+
+            if(self.stepBodyHidden == true) {
+                stepCircle.classList.remove('background-blue');
+                stepCircle.classList.add('background-grey');
+            }
+
+            // TO IMPLEMENT: add active step background color logic here
+        },
+
+        _computeBackButtonHidden: function () {
+            return this.showBackButton;
+        },
+
+        _computeNextButtonHidden: function () {
+            return this.showNextButton;
+        },
+
+        // Send an event containing the current step index to at-carbon-stepper
+        // at-carbon-stepper will calculate the index of the next step so it could be opened
+        _openNextStep: function () {
+            this.fire("next-step", { value: this.stepIndex }, { bubbles: true });
+        },
+
+        // Send an event containing the current step index to at-carbon-stepper
+        // at-carbon-stepper will calculate the index of the previous step so it could be opened
+        _openPreviousStep: function () {
+            this.fire("previous-step", { value: this.stepIndex }, { bubbles: true });
+        }
+
+    });
+</script>
