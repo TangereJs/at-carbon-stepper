@@ -13,16 +13,63 @@
 <dom-module id="at-carbon-stepper">
   <template>
     <style include="at-core-style-classes">
+      :host {
+        display: block;
+        box-sizing: border-box;
 
+        height: 48px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .clear-float {
+        clear: both;
+      }
+
+      .content-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      #tabsContainer {
+        position: relative;
+        height: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        margin: 0;
+      }
+
+      #tabsContent {
+        position: relative;
+        height: 100%;
+      }
+
+      #tabsContent.scrollable {
+        position: absolute;
+      }
+
+      [hidden] * {
+        display: none !important;
+      }
     </style>
 
-    <div id="wrapper" class="wrapper">
-      <div id="stepContainer" class="stepContainer" on-next-step="_openNextStepHandler" on-previous-step="_openPreviousStepHandler">
-        <slot></slot>
+    <div class="wrapper">
+      <div id="contentWrapper" class="container layout-vertical">
+        <div id="stepsContainer">
+          <slot></slot>
+        </div>
       </div>
     </div>
 
   </template>
+
 </dom-module>
 
 <script>
@@ -30,76 +77,77 @@
 
     is: 'at-carbon-stepper',
 
-    behaviors: [
-      Polymer.IronResizableBehavior
-    ],
-
     properties: {
+
       /**
-       * Contains an ID of the selected step.
+       * Gets or sets the selected element. The default is to use the index of the item.
        *
        * @attribute selected
        * @type {string}
        */
-      activeStep: {
+      selected: {
         type: String,
         notify: true,
-        observer: '_activeStepChanged'
+        observer: 'selectedChanged'
       },
+
+      attrForSelected: {
+        type: String,
+        value: 'id'
+      },
+
+      tabs: {
+        type: Array,
+        value: function() {
+          return [];
+        },
+        schema: {
+          items: {
+            type: "object",
+            properties: {
+              heading: {
+                type: String,
+                value: ''
+              },
+              circleNumber: {
+                type: String,
+                value: ''
+              },
+
+              forStepper: {
+                type: String,
+                value: ''
+              },
+
+              dataName: {
+                type: String,
+                value: ''
+              },
+
+              stepper: {
+                type: Object,
+                value: null
+              },
+            }
+          }
+        },
+        layout: "vertical",
+        title: "Steps",
+        xgridcols: "12"
+      },
+
     },
 
-    ready: function () {
-
+    /**
+     * This function switches the current tab to the tab with tabId
+     */
+    selectedChanged: function(newValue, oldValue) {
+      this.fire('tab-changed', {
+        value: {
+          currentTab: newValue,
+          previousTab: oldValue
+        }
+      });
     },
-
-    _activeStepChanged: function (newValue, oldValue) {
-      console.log("Active step changed: " + this.activeStep);
-    },
-
-    // Get all steps contained in this stepper
-    _getAllSteps: function () {
-      var self = this;
-      var stepContainer = self.$.stepContainer;
-
-      var allSteps = this.querySelectorAll('at-carbon-stepper-step');
-
-      return allSteps;
-    },
-
-    // Close the step with current index and open the next step
-    _openNextStepHandler: function (event) {
-      var currentStepIndex = event.detail.value - 1;
-      var nextStepIndex = currentStepIndex + 1;
-
-      var stepsArray = this._getAllSteps();
-
-      var currentStep = stepsArray[currentStepIndex];
-      var nextStep = stepsArray[nextStepIndex];
-
-      currentStep.stepBodyHidden = true;
-      nextStep.stepBodyHidden = false;
-
-      // Next step becomes an active step
-      this.activeStep = nextStep.id;
-    },
-
-    // Close the step with current index and open the previous step
-    _openPreviousStepHandler: function (event) {
-      var currentStepIndex = event.detail.value - 1;
-      var previousStepIndex = currentStepIndex - 1;
-
-      var stepsArray = this._getAllSteps();
-
-      var currentStep = stepsArray[currentStepIndex];
-      var previousStep = stepsArray[previousStepIndex];
-
-      currentStep.stepBodyHidden = true;
-      previousStep.stepBodyHidden = false;
-
-      // Previous step becomes an active step
-      this.activeStep = previousStep.id;
-    },
-
-
   });
 </script>

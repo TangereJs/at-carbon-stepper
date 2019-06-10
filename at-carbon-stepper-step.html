@@ -2,10 +2,36 @@
 <link rel="import" href="../at-carbon-icon/at-carbon-icon.html">
 <link rel="import" href="../at-carbon-badge/at-carbon-badge.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../at-core-style-classes/at-core-style-classes.html" />
 
 <dom-module id="at-carbon-stepper-step">
     <template>
         <style include="at-core-style-classes">
+            :host {
+                display: inline-block;
+                cursor: default;
+
+                --tab-background-color: #EFF6FF;
+                --tab-icon-color: #0050FF;
+                --tab-text-color: #4A90E2;
+            }
+
+            :host * {
+                box-sizing: border-box;
+            }
+
+            :host(.scrollable) {
+                height: 100%;
+            }
+
+            :host([link]) {
+                padding: 0;
+            }
+
+            :host([disabled]) {
+                @apply --at-form-disabled;
+            }
+
             .stepCircle {
                 border-radius: 50%;
                 color: white;
@@ -16,61 +42,263 @@
                 line-height: 30px;
             }
 
-            .verticalBar {
-                border-right: black 1px solid;
-                width: 15px;
+            .tab-content {
+                height: 100%;
+                padding: 0 12px;
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+                transition: opacity 0.1s cubic-bezier(0.4, 0.0, 1, 1);
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
             }
 
-            .betweenStepVerticalBar {
-                border-right: black 1px solid;
-                height: 15px;
-                width: 15px;
+            :host(:not(.iron-selected))>.tab-content {
+                opacity: 0.6;
             }
 
-            [hidden] {
+            .tab-content> ::slotted>a {
+                height: 100%;
+                @apply --layout-flex;
+            }
+
+            .tab-content> ::slotted {
+                cursor: pointer;
+            }
+
+            .tab-content> ::slotted(a) {
+                height: 100%;
+                @apply --layout-flex;
+            }
+
+            .tab-content ::slotted(*) {
+                cursor: pointer;
+            }
+
+            .cursor-pointer {
+                cursor: pointer;
+            }
+
+            .hidden {
                 display: none !important;
+            }
+
+            .icon-with-label {
+                margin-right: 4px;
+            }
+
+            #container.default {
+                padding: 0 12px;
+                padding-bottom: 12px;
+            }
+
+            :host(.iron-selected)>#container.default {
+                border-bottom: 2px solid var(--primary-color);
+            }
+
+            :host(:focus) {
+                outline: none;
+            }
+
+            /*
+        STYLES for the tab-style tab
+      */
+            #container.tab {
+                padding: 0 12px;
+
+                height: 100%;
+                position: relative;
+
+                margin: 0 auto;
+                margin-left: 1px;
+
+                border-bottom: 1px solid lightgray;
+            }
+
+            :host(.iron-selected)>#container.tab {
+                border-bottom: 2px solid var(--primary-color);
+                color: var(--tab-text-color) !important;
+
+                background-image: linear-gradient(transparent 10%, var(--tab-background-color));
+            }
+
+            #container.tab:before,
+            #container.tab:after {
+                content: "";
+                position: absolute;
+
+                top: -1px;
+                bottom: -1px;
+
+                width: 1px;
+                background-image: linear-gradient(transparent 30%, lightgray 100%);
+            }
+
+            #container.tab:before {
+                left: -1px;
+            }
+
+            #container.tab:after {
+                right: -1px;
+            }
+
+            /*
+        COMPACT TAB styles
+      */
+            #container.tab.compact at-carbon-icon {
+                display: none !important;
+            }
+
+            :host(:hover)>#container.tab.compact label {
+                cursor: pointer;
+                color: var(--tab-text-color);
+            }
+
+            :host(:focus)>#container.tab.compact {
+                outline: none;
+                background-image: linear-gradient(transparent 10%, var(--tab-background-color));
+            }
+
+            :host(:focus)>#container.tab.compact label {
+                color: var(--tab-text-color);
+            }
+
+            /*
+        LARGE TAB styles
+      */
+
+            #container.tab.large at-carbon-icon {
+                display: block !important;
+                margin: 0 auto;
+            }
+
+            #container.tab.large label {
+                display: block !important;
+            }
+
+            :host(.iron-selected)>#container.tab.large {
+                color: var(--tab-text-color);
+            }
+
+            :host(:hover)>#container.tab.large at-carbon-icon {
+                color: var(--tab-text-color);
+            }
+
+            :host(:hover)>#container.tab.large label {
+                color: var(--tab-text-color);
+            }
+
+            :host(:focus)>#container.tab.large {
+                background-image: linear-gradient(transparent 10%, var(--tab-background-color));
+            }
+
+            :host(:focus)>#container.tab.large at-carbon-icon {
+                color: var(--tab-text-color);
+            }
+
+            :host(:focus)>#container.tab.large label {
+                color: var(--tab-text-color);
+            }
+
+            /*
+        STYLES for the tab-style pill
+      */
+
+            #container.pill {
+                position: relative;
+
+                padding: 0 12px;
+                border: 1px solid lightgray;
+            }
+
+            :host(.iron-selected)>#container.pill {
+                color: var(--tab-text-color) !important;
+                background-color: var(--tab-background-color) !important;
+            }
+
+            /*
+        PILL COMPACT styles
+      */
+
+            :host(.iron-selected)>#container.pill.compact label {
+                color: var(--tab-text-color) !important;
+            }
+
+            #container.pill.compact at-carbon-icon {
+                display: none !important;
+            }
+
+            :host(:hover)>#container.pill.compact {
+                background-color: var(--at-light-grey);
+            }
+
+            :host(:hover)>#container.pill.compact label {
+                color: var(--at-black);
+            }
+
+            :host(:focus)>#container.pill.compact {
+                background-color: var(--at-light-grey);
+            }
+
+            :host(:focus)>#container.pill.compact label {
+                color: var(--tab-text-color);
+            }
+
+            /*
+        PILL LARGE styles
+      */
+
+            #container.pill.large at-carbon-icon {
+                display: block !important;
+                margin: 0 auto;
+            }
+
+            #container.pill.large label {
+                display: block !important;
+            }
+
+            :host(.iron-selected)>#container.pill.large at-carbon-icon {
+                color: var(--tab-icon-color) !important;
+            }
+
+            :host(.iron-selected)>#container.pill.large label {
+                color: var(--tab-text-color) !important;
+            }
+
+            :host(:hover)>#container.pill.large {
+                background-color: var(--at-light-grey);
+            }
+
+            :host(:hover)>#container.pill.large at-carbon-icon {
+                color: var(--at-black);
+            }
+
+            :host(:hover)>#container.pill.large label {
+                color: var(--at-black);
+            }
+
+            :host(:focus)>#container.pill.large {
+                outline: none;
+                background-color: var(--at-light-grey);
+            }
+
+            :host(:focus)>#container.pill.large at-carbon-icon {
+                color: var(--tab-icon-color);
+            }
+
+            :host(:focus)>#container.pill.large label {
+                color: var(--tab-text-color);
             }
         </style>
 
-        <div id="wrapper" class="container layout-vertical msm">
-            <div id="stepHeader" class="container layout-horizontal mbsm">
-                <div id="stepCircle" class="stepCircle mrsm background-grey">
-                    <!-- This contains the circle with index number (e.g. '1', '2', '3'...) -->
-                </div>
-
-                <div id="stepHeading" class="container layout-horizontal layout-center">
-                    <!-- This contains the heading of each step (e.g. 'the first section', 'Section 2', 'Section3'...) -->
-                </div>
-            </div>
-
-            <div id="stepBody" class="layout-horizontal " hidden=[[stepBodyHidden]]>
-                <div id="verticalBar" class="verticalBar" hidden=[[!showVerticalBar]]>
-                    <!-- The vertical bar is used as a connector between the steps -->
-                </div>
-
-                <div id="formContents" class="mllg">
-                    <!-- The form will go here -->
-                    <slot></slot>
-                    <div id="buttonContainer" class="ml plsm mt mb">
-                        <at-carbon-button id="backButton" label="Back" color="Primary" on-click="_openPreviousStep"
-                            hidden="[[!_computeBackButtonHidden()]]"></at-carbon-button>
-                        <at-carbon-button id="nextButton" label="Next" color="Primary" on-click="_openNextStep"
-                            hidden="[[!_computeNextButtonHidden()]]"></at-carbon-button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="betweenStepVerticalBar" class="layout-horizontal" hidden=[[!showBetweenStepVerticalBar]]>
-                <div class="betweenStepVerticalBar"></div>
-            </div>
-
-        </div>
-
     </template>
+
 </dom-module>
 
 <script>
     Polymer({
+
         is: 'at-carbon-stepper-step',
 
         properties: {
@@ -78,88 +306,64 @@
                 type: String,
                 value: ''
             },
-
-            stepIndex: {
+            badgeLabel: {
                 type: String,
                 value: ''
             },
-
-            showNextButton: {
-                type: Boolean,
-                value: false
+            badgeColor: {
+                type: String,
+                value: ''
             },
-
-            showBackButton: {
-                type: Boolean,
-                value: false
-            },
-
-            showVerticalBar: {
-                type: Boolean,
-                value: true
-            },
-
-            showBetweenStepVerticalBar: {
-                type: Boolean,
-                value: true
-            },
-
-            stepBodyHidden: {
-                type: Boolean,
-                value: false,
-                observer: '_stepBodyHiddenChanged'
-            }
         },
 
-        attached: function () {
-            var self = this;
+        _computeContainerTabStyleClasses: function(tabStyle, tabSize) {
+            if (tabStyle !== "tab") return "";
+            var result = ["tab"];
 
-            // Set index number in circle and a heading
-            var stepCircle = self.$.stepCircle;
-            var stepHeading = self.$.stepHeading;
-
-            stepCircle.innerHTML = self.stepIndex;
-            stepHeading.innerHTML = self.label;
-
-        },
-
-        _stepBodyHiddenChanged: function() {
-            var self = this;
-
-            var stepCircle = self.$.stepCircle;
-
-            if(self.stepBodyHidden == false) {
-                stepCircle.classList.remove('background-grey');
-                stepCircle.classList.add('background-blue');
+            if (tabSize !== "default") {
+                result.push(tabSize);
             }
 
-            if(self.stepBodyHidden == true) {
-                stepCircle.classList.remove('background-blue');
-                stepCircle.classList.add('background-grey');
+            return result.length > 0 ? result.join(" ") : result.toString();
+        },
+
+        _computeContainerPillStyleClasses: function(tabStyle, tabSize) {
+            if (tabStyle !== "pill") return "";
+            var result = ["pill"];
+
+            if (tabSize !== "default") {
+                result.push(tabSize);
             }
 
-            // TO IMPLEMENT: add active step background color logic here
+            return result.join(" ");
         },
 
-        _computeBackButtonHidden: function () {
-            return this.showBackButton;
+        _computeLabelHidden: function(label, icon) {
+            this.async(function() {
+                this.$.badge.updatePosition();
+            }, 10);
+            var result = !label && !icon;
+            return result;
         },
 
-        _computeNextButtonHidden: function () {
-            return this.showNextButton;
+        _computeIconHidden: function(icon) {
+            return !icon;
         },
 
-        // Send an event containing the current step index to at-carbon-stepper
-        // at-carbon-stepper will calculate the index of the next step so it could be opened
-        _openNextStep: function () {
-            this.fire("next-step", { value: this.stepIndex }, { bubbles: true });
+        _computeAdditionalIconClass: function(label, icon, size) {
+            if (size == "compact") return 'hidden';
+
+            return (icon && label) ? "icon-with-label" : "";
         },
 
-        // Send an event containing the current step index to at-carbon-stepper
-        // at-carbon-stepper will calculate the index of the previous step so it could be opened
-        _openPreviousStep: function () {
-            this.fire("previous-step", { value: this.stepIndex }, { bubbles: true });
+        _computeInnerHTMLHidden: function(label, icon) {
+            var result = !!label && !!icon;
+            return result;
+        },
+
+        _computeAdditionalClasses: function(label) {
+            if (label.length > 0) return "cursor-pointer";
+            return "";
         }
-
     });
 </script>
