@@ -87,15 +87,20 @@
                 console.log("Stepper-heading: data-name is null.");
                 return;
             }
+            
+            if (this.stepper == null) {
+                var stepper = document.getElementById(this.forStepper);
 
-            var stepper = document.getElementById(this.forStepper);
+                if (stepper == null) {
+                    console.log("Stepper-heading: stepper is null.");
+                    return;
+                } else {
+                    stepper.selected = this.dataName;
+                }
 
-            if(stepper == null) {
-                console.log("Stepper-heading: stepper is null");
-                return;
             }
 
-            stepper.selected = this.dataName
+            this.stepper.selected = this.dataName
         }
 
     });
