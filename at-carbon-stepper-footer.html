@@ -10,13 +10,11 @@
 <dom-module id="at-carbon-stepper-footer">
     <template>
         <style include="at-core-style-classes">
-           
         </style>
 
         <div id="buttonContainer" class="container layout-horizontal">
            <at-carbon-button id="backButton" color="primary" label="Back" on-click="_openPreviousSection"></at-carbon-button>
            <at-carbon-button id="nextButton" color="primary" label="Next" on-click="_openNextSection"></at-carbon-button>
-           <!-- <at-carbon-button id="validationButton" color="primary" label="Validate" on-click="callValidationFunction"></at-carbon-button> -->
         </div>
 
     </template>
@@ -44,17 +42,11 @@
                 value: 0
             },
             /*
-            * currentSection holds the current section object
-            */
-            currentSection: {
-                type: Object,
-                value: null
-            },
-            /*
             * validationFunction holds an at-core-form's validation function and is used to validate one section.
             */
             validationFunction: {
                 type: Object,
+                value: null
             },
             /*
             * sectionsArray contains an array of sections. It is used to set the section on stepper.
@@ -92,8 +84,6 @@
             if(self.currentSectionNumber == self.numberOfSections - 1) {
                 Polymer.dom(nextButton).classList.add('hidden');
             }
-
-            console.log(self.currentSection);
         },
 
         _openPreviousSection: function() {
@@ -103,24 +93,23 @@
                 // get previous section from sectionsArray and set stepper.selected to that section
                 var previousSection = self.sectionsArray[self.currentSectionNumber - 1];
                 self.stepper.selected = previousSection.sectionName;
-
             }
         },
 
         _openNextSection: function() {
             var self = this;
 
-            if(self.stepper != null) {
-                // get next section from sectionsArray and set stepper.selected to that section
-                var nextSection = self.sectionsArray[self.currentSectionNumber + 1];
-                self.stepper.selected = nextSection.sectionName;
+            // get the name of the current section
+            var currentSectionName = self.sectionsArray[self.currentSectionNumber].sectionName;
 
+            // if validation function returns true -> open next section
+            if (self.validationFunction(currentSectionName) == true) {
+                if (self.stepper != null) {
+                    // get next section from sectionsArray and set stepper.selected to that section
+                    var nextSection = self.sectionsArray[self.currentSectionNumber + 1];
+                    self.stepper.selected = nextSection.sectionName;
+                }
             }
-        },
-
-        _callValidationFunction: function () {
-            console.log("Calling validation function...");
-            // TO DO: working on implementation
         },
     });
 </script>
