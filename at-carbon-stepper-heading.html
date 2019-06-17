@@ -75,16 +75,19 @@
         },
 
         ready: function() {
+         
+        },
+
+        attached: function() {
             var self = this;
 
             var stepCircle = self.$.stepCircle;
 
-            stepCircle.innerHTML = this.stepNumber;
+            stepCircle.innerHTML = self.stepNumber;
 
             // set primary circle color on currently active step
-            if(this.stepper.selected == this.dataName) {
-                Polymer.dom(stepCircle).classList.remove('background-grey');
-                Polymer.dom(stepCircle).classList.add('background-blue');
+            if (self.stepNumber == '1') {
+                self.isActive = true;
             }
         },
 
