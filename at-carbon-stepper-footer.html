@@ -10,11 +10,18 @@
 <dom-module id="at-carbon-stepper-footer">
     <template>
         <style include="at-core-style-classes">
+            .buttonAlignment {
+                margin-left:15px;
+            }
+
+            .removeLeftButtonMargin {
+                margin-left:0px;
+            }
         </style>
 
-        <div id="buttonContainer" class="container layout-horizontal">
-           <at-carbon-button id="backButton" color="primary" label="Back" on-click="_openPreviousSection"></at-carbon-button>
-           <at-carbon-button id="nextButton" color="primary" label="Next" on-click="_openNextSection"></at-carbon-button>
+        <div id="buttonContainer" class="container layout-horizontal buttonAlignment">
+           <at-carbon-button id="backButton" class="removeLeftButtonMargin" color="primary" label="Back" on-click="_openPreviousSection"></at-carbon-button>
+           <at-carbon-button id="nextButton" class="removeLeftButtonMargin" color="primary" label="Next" on-click="_openNextSection"></at-carbon-button>
         </div>
 
     </template>

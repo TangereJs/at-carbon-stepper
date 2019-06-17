@@ -62,6 +62,12 @@
                 type: Object,
                 value: null
             },
+
+            isActive: {
+                type: Boolean,
+                value: false,
+                observer: '_isActiveChanged'
+            }
         },
 
         listeners: {
@@ -74,9 +80,34 @@
             var stepCircle = self.$.stepCircle;
 
             stepCircle.innerHTML = this.stepNumber;
+
+            // set primary circle color on currently active step
+            if(this.stepper.selected == this.dataName) {
+                Polymer.dom(stepCircle).classList.remove('background-grey');
+                Polymer.dom(stepCircle).classList.add('background-blue');
+            }
+        },
+
+        _isActiveChanged: function(newValue, oldValue) {
+            var self = this;
+
+            var stepCircle = self.$.stepCircle;
+
+            if(newValue == true) {
+                Polymer.dom(stepCircle).classList.remove('background-grey');
+                Polymer.dom(stepCircle).classList.add('background-blue');
+            } else {
+                Polymer.dom(stepCircle).classList.remove('background-blue');
+                Polymer.dom(stepCircle).classList.add('background-grey');
+            }
         },
 
         _tapHandler: function(event) {
+
+            var self = this;
+
+
+            var stepCircle = self.$.stepCircle;
 
             if(this.forStepper == null) {
                 console.log("Stepper-heading: for-stepper is null.");

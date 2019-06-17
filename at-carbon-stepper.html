@@ -139,15 +139,35 @@
     },
 
     /**
-     * This function switches the current tab to the tab with tabId
+     * This function switches the current step to the step with id
      */
     selectedChanged: function(newValue, oldValue) {
+      var self = this;
+
       this.fire('tab-changed', {
         value: {
           currentTab: newValue,
           previousTab: oldValue
         }
       });
+
+      // get parent container which contains at-carbon-stepper-heading elements
+      var parentContainer = Polymer.dom(self).parentNode;
+
+      // get headings from parentContainer
+      var headings = Polymer.dom(parentContainer).querySelectorAll('at-carbon-stepper-heading');
+
+      // Change currently active stepper heading. This changes circle color.
+      if (headings) {
+        headings.forEach(function (heading, index) {
+          if (heading.dataName == self.selected) {
+            heading.isActive = true;
+          } else {
+            heading.isActive = false;
+          }
+        })
+      }
+
     },
   });
 </script>
