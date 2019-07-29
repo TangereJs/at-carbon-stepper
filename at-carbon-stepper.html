@@ -16,7 +16,6 @@
       :host {
         display: block;
         box-sizing: border-box;
-
         height: 48px;
         font-size: 14px;
         font-weight: 500;
@@ -51,9 +50,9 @@
         height: 100%;
       }
 
-      #tabsContent.scrollable {
-        position: absolute;
-      }
+     #tabsContent.scrollable {
+       position: absolute;
+     }
 
       [hidden] * {
         display: none !important;
@@ -61,10 +60,8 @@
     </style>
 
     <div class="wrapper">
-      <div id="contentWrapper" class="container layout-vertical">
-        <div id="stepsContainer">
-          <slot></slot>
-        </div>
+      <div class="layout-vertical">
+        <slot></slot>
       </div>
     </div>
 
